@@ -1,4 +1,6 @@
 {
+  "settings.theme.label": "Cursor theme",
+  "settings.theme.description": "XCursor theme name, for example macOS or macOS-White. It must be installed in ~/.local/share/icons.",
   "settings.size.label": "Cursor size",
   "settings.size.description": "Cursor size in pixels. Applied at startup and whenever this setting changes."
 }

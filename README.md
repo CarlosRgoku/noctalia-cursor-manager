@@ -1,12 +1,14 @@
 # Noctalia Cursor Manager
 
-Plugin de [Noctalia](https://noctalia.dev) que aplica um tamanho maior para o ponteiro do mouse na inicialização e sempre que você mudar a configuração.
+Plugin de [Noctalia](https://noctalia.dev) que aplica **tema e tamanho** do ponteiro do mouse na inicialização e sempre que você mudar a configuração.
 
-Funciona em **niri**, **Hyprland** e **Sway**, além de aplicar o tamanho via `gsettings` para aplicativos GTK.
+Funciona em **niri**, **Hyprland** e **Sway**, além de aplicar tema e tamanho via `gsettings` para aplicativos GTK.
+
+Padrão: tema **macOS** (apple_cursor) com **48 px**.
 
 ## Por que existe
 
-O niri não expõe o tamanho do cursor via IPC: ele só lê `cursor { xcursor-size N }` do `config.kdl`. Este plugin faz essa alteração de forma idempotente, com backup automático, e deixa o niri recarregar a configuração sozinho.
+O niri não expõe tema nem tamanho do cursor via IPC: ele só lê `cursor { xcursor-theme "macOS"; xcursor-size 48 }` do `config.kdl`. Este plugin faz essa alteração de forma idempotente, com backup automático, e deixa o niri recarregar a configuração sozinho.
 
 ## Instalação
 
@@ -16,10 +18,17 @@ cd noctalia-cursor-manager
 ./install.sh
 ```
 
-O script copia o plugin para `~/.local/share/noctalia/plugins/cursor-manager/` e tenta habilitá-lo com:
+O script:
+
+1. Copia o plugin para `~/.local/share/noctalia/plugins/cursor-manager/`
+2. Baixa o tema `macOS` do [ful1e5/apple_cursor](https://github.com/ful1e5/apple_cursor) se ele ainda não existir em `~/.local/share/icons/`
+3. Habilita o plugin com `noctalia msg plugins enable my-tools/cursor-manager`
+
+Opções:
 
 ```bash
-noctalia msg plugins enable my-tools/cursor-manager
+./install.sh --white      # instala o tema macOS-White
+./install.sh --no-theme   # não baixa tema nenhum
 ```
 
 Se preferir manualmente:
@@ -32,14 +41,13 @@ noctalia msg plugins enable my-tools/cursor-manager
 
 ## Uso
 
-Padrão: **48 px**.
-
-Mudar pelo painel: **Settings → Plugins → Cursor Manager → Cursor size**.
+Mudar pelo painel: **Settings → Plugins → Cursor Manager** (tema e tamanho).
 
 Ou por IPC, sem reiniciar nada:
 
 ```bash
 noctalia msg plugin my-tools/cursor-manager:service all set 64
+noctalia msg plugin my-tools/cursor-manager:service all set-theme macOS
 noctalia msg plugin my-tools/cursor-manager:service all apply
 ```
 
@@ -53,16 +61,24 @@ noctalia msg plugins list | grep cursor
 
 | Ambiente | Ação |
 | --- | --- |
-| niri | Reescreve `xcursor-size` em `~/.config/niri/config.kdl` |
+| niri | Reescreve `xcursor-theme` e `xcursor-size` em `~/.config/niri/config.kdl` |
 | Hyprland | `hyprctl setcursor <tema> <tamanho>` |
 | Sway | `swaymsg seat - xcursor_theme <tema> <tamanho>` |
-| GTK (todos) | `gsettings set org.gnome.desktop.interface cursor-size <tamanho>` |
+| GTK (todos) | `gsettings set org.gnome.desktop.interface cursor-theme/cursor-size` |
+
+A edição do `config.kdl` é feita pelo `apply-niri.sh`, que roda `niri validate` no arquivo gerado antes de gravar. Se o resultado for inválido, nada é alterado.
 
 Antes da primeira alteração no niri, é criado um backup em:
 
 ```
 ~/.config/niri/config.kdl.bak-cursor-manager
 ```
+
+## Tema macOS
+
+O tema usado por padrão é o [apple_cursor](https://github.com/ful1e5/apple_cursor) v2.0.1, de **ful1e5**, licenciado sob **GPL-3.0**. Ele não é redistribuído neste repositório: o `install.sh` baixa o arquivo oficial `macOS.tar.xz` na sua máquina.
+
+Se você já tem o tema em outro lugar, basta copiá-lo para `~/.local/share/icons/macOS/` e ajustar a opção **Cursor theme** para o nome da pasta.
 
 ## Desinstalar
 
@@ -71,7 +87,7 @@ noctalia msg plugins disable my-tools/cursor-manager
 rm -rf ~/.local/share/noctalia/plugins/cursor-manager
 ```
 
-Para restaurar o tamanho original do niri:
+Para restaurar o cursor original do niri:
 
 ```bash
 cp ~/.config/niri/config.kdl.bak-cursor-manager ~/.config/niri/config.kdl
@@ -82,7 +98,9 @@ cp ~/.config/niri/config.kdl.bak-cursor-manager ~/.config/niri/config.kdl
 - Noctalia v5 ou mais recente
 - `plugin_api` 24 (suportado pelo Noctalia atual)
 - niri, Hyprland ou Sway (GTK funciona em qualquer ambiente)
+- `curl` e `tar` apenas para baixar o tema no `install.sh`
 
 ## Licença
 
-MIT
+Código do plugin: MIT.
+Tema apple_cursor: GPL-3.0, © ful1e5.

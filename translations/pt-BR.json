@@ -1,4 +1,6 @@
 {
+  "settings.theme.label": "Tema do cursor",
+  "settings.theme.description": "Nome do tema XCursor, por exemplo macOS ou macOS-White. Precisa estar instalado em ~/.local/share/icons.",
   "settings.size.label": "Tamanho do cursor",
   "settings.size.description": "Tamanho do cursor em pixels. Aplicado na inicialização e sempre que esta opção mudar."
 }
