@@ -1,0 +1,4 @@
+{
+  "settings.size.label": "Tamanho do cursor",
+  "settings.size.description": "Tamanho do cursor em pixels. Aplicado na inicialização e sempre que esta opção mudar."
+}

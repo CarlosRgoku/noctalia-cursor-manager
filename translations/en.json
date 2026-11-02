@@ -1,0 +1,4 @@
+{
+  "settings.size.label": "Cursor size",
+  "settings.size.description": "Cursor size in pixels. Applied at startup and whenever this setting changes."
+}
